@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Talabat.Repository.Data;
+
 namespace Talabat.APIs
 {
 	public class Program
@@ -18,12 +21,18 @@ namespace Talabat.APIs
 			//about swagger
 			webApplicationBuilder.Services.AddEndpointsApiExplorer();
 			webApplicationBuilder.Services.AddSwaggerGen();
+			webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
+			{
+				options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
+			});
 			#endregion
 			
 
 			var app = webApplicationBuilder.Build();
 
+
 			#region Configure Kestrel MiddleWares
+
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
