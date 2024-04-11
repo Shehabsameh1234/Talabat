@@ -9,7 +9,7 @@ using Talabat.Core.Entities;
 
 namespace Talabat.Repository.Data.Configuration
 {
-	internal class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCategory>
+	public class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCategory>
 	{
 		public void Configure(EntityTypeBuilder<ProductCategory> builder)
 		{
