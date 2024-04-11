@@ -6,7 +6,7 @@ namespace Talabat.APIs
 	public class Program
 	{
 		//Entry Point
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
@@ -27,8 +27,33 @@ namespace Talabat.APIs
 			});
 			#endregion
 			
-
 			var app = webApplicationBuilder.Build();
+
+			#region Asking Clr To Generate Object From storeContext
+			//1-Create scope (using keyword => dispose the scope after using it )
+			using var scope = app.Services.CreateScope();
+
+			//2-Create service
+			var service = scope.ServiceProvider;
+
+			//3-generate object from StoreContext
+			var _DbContext=service.GetRequiredService<StoreContext>();
+
+			//4- log the ex using loggerFactory Class and generate object from loggerFactory
+			var loggerFactory =service.GetRequiredService<ILoggerFactory>();
+
+			try
+			{
+				//4-add migration
+				await _DbContext.Database.MigrateAsync();
+			}
+			catch (Exception ex )
+			{
+				var logger = loggerFactory.CreateLogger<Program>();
+				logger.LogError(ex, "an error has been occured during apply the migration");
+			}
+
+			#endregion
 
 
 			#region Configure Kestrel MiddleWares
@@ -59,7 +84,6 @@ namespace Talabat.APIs
 			
 			#endregion
 			
-
 
 			app.Run();
 		}
