@@ -17,7 +17,7 @@ namespace Talabat.Repository.Data.Configuration
 				   .IsRequired()
 				   .HasMaxLength(100);
 
-			builder.Property(p => p.Descriprion)
+			builder.Property(p => p.Description)
 				   .IsRequired();
 
 			builder.Property(p=>p.PictureUrl)
@@ -28,11 +28,11 @@ namespace Talabat.Repository.Data.Configuration
 
 			builder.HasOne(p => p.Category)
 				   .WithMany()
-				   .HasForeignKey(p => p.BrandId);
+				   .HasForeignKey(p => p.CategoryId);
 
 			builder.HasOne(p => p.Brand)
 			   .WithMany()
-			   .HasForeignKey(p => p.CategoryId);
+			   .HasForeignKey(p => p.BrandId);
 		}
 	}
 }

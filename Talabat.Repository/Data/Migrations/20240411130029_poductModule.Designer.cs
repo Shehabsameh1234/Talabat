@@ -11,7 +11,7 @@ using Talabat.Repository.Data;
 namespace Talabat.Repository.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240411032125_poductModule")]
+    [Migration("20240411130029_poductModule")]
     partial class poductModule
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace Talabat.Repository.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Descriprion")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -98,13 +98,13 @@ namespace Talabat.Repository.Data.Migrations
 
             modelBuilder.Entity("Talabat.Core.Entities.Product", b =>
                 {
-                    b.HasOne("Talabat.Core.Entities.ProductCategory", "Category")
+                    b.HasOne("Talabat.Core.Entities.ProductBrand", "Brand")
                         .WithMany()
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Talabat.Core.Entities.ProductBrand", "Brand")
+                    b.HasOne("Talabat.Core.Entities.ProductCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)

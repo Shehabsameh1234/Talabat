@@ -41,7 +41,7 @@ namespace Talabat.Repository.Data.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Descriprion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal (18,2)", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false),
@@ -51,14 +51,14 @@ namespace Talabat.Repository.Data.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Products_ProductBrands_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_Products_ProductBrands_BrandId",
+                        column: x => x.BrandId,
                         principalTable: "ProductBrands",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_ProductCategories_BrandId",
-                        column: x => x.BrandId,
+                        name: "FK_Products_ProductCategories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "ProductCategories",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
