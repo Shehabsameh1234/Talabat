@@ -25,7 +25,7 @@ namespace Talabat.APIs
 			webApplicationBuilder.Services.AddSwaggerGen();
 			webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
 			{
-				options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
+				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
 			});
 			//apply service for generic repos
 			webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
