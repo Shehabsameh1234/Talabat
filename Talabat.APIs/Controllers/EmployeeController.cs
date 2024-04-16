@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Talabat.APIs.Errors;
 using Talabat.Core.Entities;
 using Talabat.Core.Repository.Contract;
 using Talabat.Core.Specifications.productSpecifications;
@@ -30,7 +31,7 @@ namespace Talabat.APIs.Controllers
 
             var emp = await _empRepository.GetWithSpecAsync(spec);
 
-            if(emp == null) { return NotFound(); }
+            if(emp == null) { return NotFound(new ApisResponse(404)); }
 
             return Ok(emp);
         }
