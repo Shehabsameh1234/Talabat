@@ -1,4 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talabat.APIs.Errors;
+using Talabat.APIs.Extentions;
+using Talabat.APIs.Helpers;
+using Talabat.APIs.Middlewares;
 using Talabat.Core.Repository.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
@@ -19,16 +24,15 @@ namespace Talabat.APIs
 			//register required web apis  services to the DI container
 			webApplicationBuilder.Services.AddControllers();
 			
-			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-			//about swagger
-			webApplicationBuilder.Services.AddEndpointsApiExplorer();
-			webApplicationBuilder.Services.AddSwaggerGen();
+			
+
 			webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
 			{
-				options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
+				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
 			});
-			//apply service for generic repos
-			webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+
+			//my own extention method
+			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
 			#endregion
 			
 			var app = webApplicationBuilder.Build();
@@ -64,14 +68,22 @@ namespace Talabat.APIs
 
 			#region Configure Kestrel MiddleWares
 
+			app.UseMiddleware<ExceptionMiddleware>();
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
-				app.UseSwagger();
-				app.UseSwaggerUI();
-			}
+                //my own extention method
+                app.SwaggerMiddleWares();
+
+                //it works internally
+                //app.UseDeveloperExceptionPage();
+            }
+			//handling when the user tryng to reach endpoind not existed
+			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 			app.UseHttpsRedirection();
+
+			app.UseStaticFiles();
 
 			////in mvc
 			//app.UseRouting();
