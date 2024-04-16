@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Extentions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
 using Talabat.Core.Repository.Contract;
@@ -23,33 +24,15 @@ namespace Talabat.APIs
 			//register required web apis  services to the DI container
 			webApplicationBuilder.Services.AddControllers();
 			
-			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-			//about swagger
-			webApplicationBuilder.Services.AddEndpointsApiExplorer();
-			webApplicationBuilder.Services.AddSwaggerGen();
+			
+
 			webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
 			{
 				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
 			});
-			//apply service for generic repos
-			webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
-			webApplicationBuilder.Services.AddAutoMapper(typeof(MappingProfiles));
-			webApplicationBuilder.Services.Configure<ApiBehaviorOptions>(options =>
-			{
-				options.InvalidModelStateResponseFactory = (actionContext) =>
-				{
-					var errors = actionContext.ModelState.Where(p => p.Value.Errors.Count() > 0)
-											.SelectMany(p => p.Value.Errors)
-											.Select(p => p.ErrorMessage)
-											.ToList();
-					var response = new ApisValidationErrors()
-					{
-						Errors = errors
-					};
 
-					return new BadRequestObjectResult(response);
-				};
-			});
+			//my own extention method
+			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
 			#endregion
 			
 			var app = webApplicationBuilder.Build();
@@ -89,12 +72,12 @@ namespace Talabat.APIs
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
-				app.UseSwagger();
-				app.UseSwaggerUI();
+                //my own extention method
+                app.SwaggerMiddleWares();
 
-				//it works internally
-				//app.UseDeveloperExceptionPage();
-			}
+                //it works internally
+                //app.UseDeveloperExceptionPage();
+            }
 			//handling when the user tryng to reach endpoind not existed
 			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
