@@ -17,7 +17,7 @@ namespace Talabat.APIs.Errors
             {
                 400 => "Bad Request",
                 401 => "not authorized",
-                404 => "not found",
+                404 => "resource not found",
                 500 => "error",
                 _=>null
             };

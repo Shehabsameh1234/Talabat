@@ -95,6 +95,8 @@ namespace Talabat.APIs
 				//it works internally
 				//app.UseDeveloperExceptionPage();
 			}
+			//handling when the user tryng to reach endpoind not existed
+			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 			app.UseHttpsRedirection();
 
