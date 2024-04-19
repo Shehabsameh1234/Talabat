@@ -11,8 +11,9 @@ namespace Talabat.Core.Repository.Contract
 	public interface IGenericRepository<T> where T : BaseEntity
 	{
 		Task<T?> GetAsync(int id);
-		Task<IEnumerable<T>> GetAllAsync();
+		Task<IReadOnlyList<T>> GetAllAsync();
         Task<T?> GetWithSpecAsync(ISepcifications<T> spec);
-        Task<IEnumerable<T>> GetAllWithSpecAsync(ISepcifications<T> spe);
+        Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISepcifications<T> spec);
+		Task<int> GetCountAsync(ISepcifications<T> spec);
     }
 }
