@@ -11,6 +11,7 @@ namespace Talabat.Core.Specifications.productSpecifications
     {
         public ProductWithFilterSpecCount(QuerySpecParams querySpec)
             :base(p =>
+             (string.IsNullOrEmpty(querySpec.Search) || p.Name.ToLower().Contains(querySpec.Search)) &&
             (!querySpec.BrandId.HasValue || p.BrandId == querySpec.BrandId.Value) &&
             (!querySpec.CategoryId.HasValue || p.CategoryId == querySpec.CategoryId.Value))
         {
