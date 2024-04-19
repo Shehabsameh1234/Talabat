@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Helpers;
 using Talabat.Core.Entities;
 using Talabat.Core.Repository.Contract;
 using Talabat.Core.Specifications;
@@ -30,12 +31,16 @@ namespace Talabat.APIs.Controllers
             _mapper = mapper;
         }
 		[HttpGet]
-		public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery]QuerySpecParams querySpec)
+		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]QuerySpecParams querySpec)
 		{
 			var spec =new ProductWithBrandAndCategorySpecifications(querySpec);
 
 			var products = await _productRepository.GetAllWithSpecAsync(spec);
-			return Ok(_mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductToReturnDto>>(products));
+			var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+			var specCount=new ProductWithFilterSpecCount(querySpec);
+			var Count = await  _productRepository.GetCountAsync(specCount);
+
+            return Ok(new Pagination<ProductToReturnDto>(querySpec.PageIndex,querySpec.pageSize,Count,data));
 		}
 		[ProducesResponseType(typeof(ProductToReturnDto),StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status404NotFound)]
