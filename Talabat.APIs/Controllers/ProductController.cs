@@ -30,18 +30,18 @@ namespace Talabat.APIs.Controllers
             _mapper = mapper;
         }
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProducts()
+		public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts()
 		{
 			var spec =new ProductWithBrandAndCategorySpecifications();
 
 			var products = await _productRepository.GetAllWithSpecAsync(spec);
-			return Ok(_mapper.Map<IEnumerable<Product>,IEnumerable<ProductToReturnDto>>(products));
+			return Ok(_mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductToReturnDto>>(products));
 		}
 		[ProducesResponseType(typeof(ProductToReturnDto),StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status404NotFound)]
 
         [HttpGet("id")]
-		public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProduct(int id)
+		public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProduct(int id)
 		{
             var spec = new ProductWithBrandAndCategorySpecifications(id);
 
@@ -51,13 +51,13 @@ namespace Talabat.APIs.Controllers
 			return Ok(_mapper.Map<Product, ProductToReturnDto>(product));
 		}
 		[HttpGet("brands")]
-		public async Task<ActionResult<IEnumerable<ProductBrand>>> GetBrands()
+		public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
 		{
 			var brands =await _brandRepository.GetAllAsync();
 			return Ok(brands);
 		}
         [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetCategories()
+        public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
         {
             var category = await _categoryiesRepository.GetAllAsync();
             return Ok(category);
