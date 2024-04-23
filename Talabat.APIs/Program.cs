@@ -38,7 +38,7 @@ namespace Talabat.APIs
 			//redis objct
 			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvidor=>
 			{
-				var Connection = webApplicationBuilder.Configuration.GetConnectionString("");
+				var Connection = webApplicationBuilder.Configuration.GetConnectionString("redisConnection");
                 return ConnectionMultiplexer.Connect(Connection);
 			});
 			
