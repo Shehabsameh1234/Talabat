@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extentions;
 using Talabat.APIs.Helpers;
@@ -33,6 +34,14 @@ namespace Talabat.APIs
 
 			//my own extention method
 			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
+
+			//redis objct
+			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvidor=>
+			{
+				var Connection = webApplicationBuilder.Configuration.GetConnectionString("redisConnection");
+                return ConnectionMultiplexer.Connect(Connection);
+			});
+			
 			#endregion
 			
 			var app = webApplicationBuilder.Build();

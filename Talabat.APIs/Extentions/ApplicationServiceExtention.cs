@@ -13,6 +13,7 @@ namespace Talabat.APIs.Extentions
         {
             //apply service for generic repos
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped(typeof(IBasektRepository), typeof(BasketRepository));
             services.AddAutoMapper(typeof(MappingProfiles));
             services.Configure<ApiBehaviorOptions>(options =>
             {
