@@ -1,9 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Talabat.Core.Repository.Contract;
+using Talabat.Repository;
+using Talabat.Repository.Data;
+
 namespace Talabat.APIs
 {
 	public class Program
 	{
 		//Entry Point
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +23,47 @@ namespace Talabat.APIs
 			//about swagger
 			webApplicationBuilder.Services.AddEndpointsApiExplorer();
 			webApplicationBuilder.Services.AddSwaggerGen();
+			webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
+			{
+				options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
+			});
+			//apply service for generic repos
+			webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 			#endregion
 			
-
 			var app = webApplicationBuilder.Build();
 
+			#region Asking Clr To Generate Object From storeContext
+			//1-Create scope (using keyword => dispose the scope after using it )
+			using var scope = app.Services.CreateScope();
+
+			//2-Create service
+			var service = scope.ServiceProvider;
+
+			//3-generate object from StoreContext
+			var _DbContext=service.GetRequiredService<StoreContext>();
+
+			//4- log the ex using loggerFactory Class and generate object from loggerFactory
+			var loggerFactory =service.GetRequiredService<ILoggerFactory>();
+
+			try
+			{
+				//4-add migration
+				await _DbContext.Database.MigrateAsync();
+				//-data seeding
+				await StoreContextSeed.SeedAsync(_DbContext);
+			}
+			catch (Exception ex )
+			{
+				var logger = loggerFactory.CreateLogger<Program>();
+				logger.LogError(ex, "an error has been occured during apply the migration");
+			}
+
+			#endregion
+
+
 			#region Configure Kestrel MiddleWares
+
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
@@ -50,7 +90,6 @@ namespace Talabat.APIs
 			
 			#endregion
 			
-
 
 			app.Run();
 		}
