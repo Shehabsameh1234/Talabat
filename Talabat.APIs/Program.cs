@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extentions;
@@ -8,6 +9,7 @@ using Talabat.APIs.Middlewares;
 using Talabat.Core.Repository.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
+using Talabat.Repository.Identity;
 
 namespace Talabat.APIs
 {
@@ -41,6 +43,10 @@ namespace Talabat.APIs
 				var Connection = webApplicationBuilder.Configuration.GetConnectionString("redisConnection");
                 return ConnectionMultiplexer.Connect(Connection);
 			});
+			webApplicationBuilder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+			{
+				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("IdentityConnection"));
+			});
 			
 			#endregion
 			
@@ -53,18 +59,20 @@ namespace Talabat.APIs
 			//2-Create service
 			var service = scope.ServiceProvider;
 
-			//3-generate object from StoreContext
-			var _DbContext=service.GetRequiredService<StoreContext>();
+            //3-generate object from StoreContext and _IdentityDbContext
+            var _DbContext =service.GetRequiredService<StoreContext>();
+            var _IdentityDbContext = service.GetRequiredService<ApplicationIdentityDbContext>();
 
-			//4- log the ex using loggerFactory Class and generate object from loggerFactory
-			var loggerFactory =service.GetRequiredService<ILoggerFactory>();
-
+            //4- log the ex using loggerFactory Class and generate object from loggerFactory
+            var loggerFactory =service.GetRequiredService<ILoggerFactory>();
 			try
 			{
 				//4-add migration
 				await _DbContext.Database.MigrateAsync();
-				//-data seeding
-				await StoreContextSeed.SeedAsync(_DbContext);
+                await _IdentityDbContext.Database.MigrateAsync();
+
+                //-data seeding
+                await StoreContextSeed.SeedAsync(_DbContext);
 			}
 			catch (Exception ex )
 			{
