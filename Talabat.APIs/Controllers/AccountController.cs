@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
 using Talabat.Core.Entities;
@@ -35,7 +36,25 @@ namespace Talabat.APIs.Controllers
                 Email = user.Email,
                 Token = "This Will Be Our Token",
             });
-            
+        }
+        [HttpPost("register")]
+        public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+        {
+            var user = new ApplicationUser()
+            {
+                DisplayName = model.DisplayName,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                UserName = model.Email.Split("@")[0],
+            };
+            var result=await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded) return BadRequest(new ApisValidationErrors() {Errors=result.Errors.Select(e=>e.Description)});
+            return Ok(new UserDto()
+            {
+                DisplayName = user.UserName,
+                Email = user.Email,
+                Token = "This Will Be Our Token",
+            });
         }
     }
 }
