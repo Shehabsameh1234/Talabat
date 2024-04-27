@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -6,6 +7,7 @@ using Talabat.APIs.Errors;
 using Talabat.APIs.Extentions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
+using Talabat.Core.Entities;
 using Talabat.Core.Repository.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
@@ -26,18 +28,23 @@ namespace Talabat.APIs
 
 			//register required web apis  services to the DI container
 			webApplicationBuilder.Services.AddControllers();
-			
-			
 
-			webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
+            //my own extention method
+            webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
+
+            webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
 			{
 				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
 			});
 
-			//my own extention method
-			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
+			//add identity services
+			webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+			{
+				//options.Password = null;
+			}).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+			
 
-			//redis objct
+			//redis object
 			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvidor=>
 			{
 				var Connection = webApplicationBuilder.Configuration.GetConnectionString("redisConnection");
@@ -73,7 +80,10 @@ namespace Talabat.APIs
 
                 //-data seeding
                 await StoreContextSeed.SeedAsync(_DbContext);
-			}
+				var _userManager = service.GetRequiredService<UserManager<ApplicationUser>>();
+				await IdentityContextSeedingData.IdentitySeedAsync(_userManager);
+
+            }
 			catch (Exception ex )
 			{
 				var logger = loggerFactory.CreateLogger<Program>();
