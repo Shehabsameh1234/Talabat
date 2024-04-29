@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Dtos;
@@ -30,6 +32,8 @@ namespace Talabat.APIs.Controllers
             _categoryiesRepository = CategoryiesRepository;
             _mapper = mapper;
         }
+        //JwtBearerDefaults.AuthenticationScheme=Bearer
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
 		[HttpGet]
 		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]QuerySpecParams querySpec)
 		{

@@ -17,7 +17,7 @@ namespace Talabat.APIs.Controllers
                 return Unauthorized(new ApisResponse(code));
             else if (code == 400)
                 return BadRequest(new ApisResponse(code));
-
+            
             else return StatusCode(code);
         }
     }

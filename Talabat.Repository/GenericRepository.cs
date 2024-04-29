@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Talabat.Core.Entities;
+using Talabat.Core;
 using Talabat.Core.Repository.Contract;
 using Talabat.Core.Specifications;
 using Talabat.Repository.Data;
 
 namespace Talabat.Repository
 {
-	public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 	{
 		private readonly StoreContext _dbContext;
 

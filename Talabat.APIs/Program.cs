@@ -1,13 +1,23 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using StackExchange.Redis;
+using System.Text;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extentions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
+using Talabat.Core.Entities;
 using Talabat.Core.Repository.Contract;
+using Talabat.Core.Service.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
+using Talabat.Repository.Identity;
+using Talabat.Srevice.AuthService;
 
 namespace Talabat.APIs
 {
@@ -23,28 +33,42 @@ namespace Talabat.APIs
 			// Add services to the container.
 
 			//register required web apis  services to the DI container
-			webApplicationBuilder.Services.AddControllers();
-			
-			
+			webApplicationBuilder.Services.AddControllers().AddNewtonsoftJson(Options =>
+			{
+				Options.SerializerSettings.ReferenceLoopHandling=ReferenceLoopHandling.Ignore;
+			});
+			//my own extention method
+			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
+		    //auth services
+			webApplicationBuilder.Services.AddAuthServicees(webApplicationBuilder.Configuration);
 
-			webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
+            webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
 			{
 				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
 			});
 
-			//my own extention method
-			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
+			//add identity services
+			webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+			{
+				//options.Password = null;
+			}).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+			
 
-			//redis objct
+			//redis object
 			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvidor=>
 			{
 				var Connection = webApplicationBuilder.Configuration.GetConnectionString("redisConnection");
                 return ConnectionMultiplexer.Connect(Connection);
 			});
+			webApplicationBuilder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+			{
+				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("IdentityConnection"));
+			});
 			
-			#endregion
-			
-			var app = webApplicationBuilder.Build();
+
+            #endregion
+
+            var app = webApplicationBuilder.Build();
 
 			#region Asking Clr To Generate Object From storeContext
 			//1-Create scope (using keyword => dispose the scope after using it )
@@ -53,19 +77,24 @@ namespace Talabat.APIs
 			//2-Create service
 			var service = scope.ServiceProvider;
 
-			//3-generate object from StoreContext
-			var _DbContext=service.GetRequiredService<StoreContext>();
+            //3-generate object from StoreContext and _IdentityDbContext
+            var _DbContext =service.GetRequiredService<StoreContext>();
+            var _IdentityDbContext = service.GetRequiredService<ApplicationIdentityDbContext>();
 
-			//4- log the ex using loggerFactory Class and generate object from loggerFactory
-			var loggerFactory =service.GetRequiredService<ILoggerFactory>();
-
+            //4- log the ex using loggerFactory Class and generate object from loggerFactory
+            var loggerFactory =service.GetRequiredService<ILoggerFactory>();
 			try
 			{
 				//4-add migration
 				await _DbContext.Database.MigrateAsync();
-				//-data seeding
-				await StoreContextSeed.SeedAsync(_DbContext);
-			}
+                await _IdentityDbContext.Database.MigrateAsync();
+
+                //-data seeding
+                await StoreContextSeed.SeedAsync(_DbContext);
+				var _userManager = service.GetRequiredService<UserManager<ApplicationUser>>();
+				await IdentityContextSeedingData.IdentitySeedAsync(_userManager);
+
+            }
 			catch (Exception ex )
 			{
 				var logger = loggerFactory.CreateLogger<Program>();
@@ -91,24 +120,14 @@ namespace Talabat.APIs
 			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 			app.UseHttpsRedirection();
+			app.UseAuthorization();
+			app.UseAuthentication();
 
 			app.UseStaticFiles();
-
-			////in mvc
-			//app.UseRouting();
-			//app.UseEndpoints(endpoints =>
-			//{
-			//	endpoints.MapControllerRoute(
-			//		name: "default",
-			//		pattern: "{controller}/{action}/{id?}"
-			//		);
-			//});
-
 
 			//to use route debend on attr route
 			app.MapControllers();
 
-			
 			#endregion
 			
 
