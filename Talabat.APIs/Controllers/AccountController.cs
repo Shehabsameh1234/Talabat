@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using System.Security.Claims;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Extentions;
 using Talabat.Core.Entities;
 using Talabat.Core.Service.Contract;
 using Talabat.Srevice.AuthService;
@@ -77,6 +78,15 @@ namespace Talabat.APIs.Controllers
                 Token = await _authService.CreateTokenAsync(user, _userManager)
             });
         }
-        
+
+        [HttpGet("address")]
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<Address>> GetUserAddress()
+        {
+            
+            var user = await _userManager.FindUserWithAddressAsync(User);
+
+            return Ok(user.Address);
+        }
     }
 }
