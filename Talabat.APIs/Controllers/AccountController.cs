@@ -38,6 +38,7 @@ namespace Talabat.APIs.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> LogIn(LogInDto model)
         {
+            
             var user =await _userManager.FindByEmailAsync(model.Email);
             if (user is null) return Unauthorized(new ApisResponse(401, "Invalid LogIn"));
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
@@ -53,6 +54,10 @@ namespace Talabat.APIs.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto model)
         {
+            if (CheckEmailExist(model.Email).Result.Value)
+            {
+                return BadRequest(new ApisResponse(400, "email in use try another one"));
+            }
             var user = new ApplicationUser()
             {
                 DisplayName = model.DisplayName,
@@ -104,6 +109,12 @@ namespace Talabat.APIs.Controllers
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded) return BadRequest(new ApisValidationErrors() { Errors = result.Errors.Select(e => e.Description) });
             return Ok(updatedAddress);
+        }
+
+        [HttpGet("emailexist")]
+        public async Task<ActionResult<bool>> CheckEmailExist(string email)
+        {
+            return await _userManager.FindByEmailAsync(email) is not null;
         }
 
     }
