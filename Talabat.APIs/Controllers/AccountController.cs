@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,16 +21,19 @@ namespace Talabat.APIs.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IAuthService authService
+            IAuthService authService,
+            IMapper mapper
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _authService = authService;
+            _mapper = mapper;
         }
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> LogIn(LogInDto model)
@@ -81,12 +85,13 @@ namespace Talabat.APIs.Controllers
 
         [HttpGet("address")]
         [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<Address>> GetUserAddress()
+        public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
-            
             var user = await _userManager.FindUserWithAddressAsync(User);
-
-            return Ok(user.Address);
+            if (user.Address == null) return Ok(new {
+                result="there is no address for this user"
+            });
+            return Ok(_mapper.Map<AddressDto>(user.Address));
         }
     }
 }

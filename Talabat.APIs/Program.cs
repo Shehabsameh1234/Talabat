@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Text;
 using Talabat.APIs.Errors;
@@ -32,8 +33,10 @@ namespace Talabat.APIs
 			// Add services to the container.
 
 			//register required web apis  services to the DI container
-			webApplicationBuilder.Services.AddControllers();
-
+			webApplicationBuilder.Services.AddControllers().AddNewtonsoftJson(Options =>
+			{
+				Options.SerializerSettings.ReferenceLoopHandling=ReferenceLoopHandling.Ignore;
+			});
 			//my own extention method
 			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
 		    //auth services
