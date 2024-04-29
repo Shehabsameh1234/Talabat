@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
 using Talabat.Core.Repository.Contract;
+using Talabat.Core.Service.Contract;
 using Talabat.Repository;
+using Talabat.Srevice.AuthService;
 
 namespace Talabat.APIs.Extentions
 {
@@ -13,6 +15,9 @@ namespace Talabat.APIs.Extentions
         {
             //apply service for generic repos
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //add DI for auth service to add token
+            services.AddScoped(typeof(IAuthService), typeof(AuthService));
+
             services.AddScoped(typeof(IBasektRepository), typeof(BasketRepository));
             services.AddAutoMapper(typeof(MappingProfiles));
             services.Configure<ApiBehaviorOptions>(options =>
