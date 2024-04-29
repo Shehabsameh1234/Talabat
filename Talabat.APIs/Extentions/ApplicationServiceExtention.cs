@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
 using Talabat.Core.Repository.Contract;
@@ -13,11 +16,9 @@ namespace Talabat.APIs.Extentions
     {
         public static IServiceCollection ApplicationServices(this IServiceCollection services)
         {
-            //apply service for generic repos
+            
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            //add DI for auth service to add token
-            services.AddScoped(typeof(IAuthService), typeof(AuthService));
-
+          
             services.AddScoped(typeof(IBasektRepository), typeof(BasketRepository));
             services.AddAutoMapper(typeof(MappingProfiles));
             services.Configure<ApiBehaviorOptions>(options =>
@@ -36,6 +37,34 @@ namespace Talabat.APIs.Extentions
                     return new BadRequestObjectResult(response);
                 };
             });
+
+            return services;
+        }
+        public static IServiceCollection AddAuthServicees(this IServiceCollection services,IConfiguration configuration)
+        {
+
+            //add auth service
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(JwtBearerOptions =>
+                {
+                    JwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = configuration["jwt:validIssuer"],
+                        ValidateAudience = true,
+                        ValidAudience = configuration["jwt:validAudience"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:AuthKey"])),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+                    };
+                });
+            //add DI for auth service to add token
+            services.AddScoped(typeof(IAuthService), typeof(AuthService));
 
             return services;
         }

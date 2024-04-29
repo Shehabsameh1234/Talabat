@@ -1,17 +1,22 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Text;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extentions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
 using Talabat.Core.Entities;
 using Talabat.Core.Repository.Contract;
+using Talabat.Core.Service.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
 using Talabat.Repository.Identity;
+using Talabat.Srevice.AuthService;
 
 namespace Talabat.APIs
 {
@@ -29,8 +34,10 @@ namespace Talabat.APIs
 			//register required web apis  services to the DI container
 			webApplicationBuilder.Services.AddControllers();
 
-            //my own extention method
-            webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
+			//my own extention method
+			webApplicationBuilder.Services.ApplicationServices().SwaggerServices();
+		    //auth services
+			webApplicationBuilder.Services.AddAuthServicees(webApplicationBuilder.Configuration);
 
             webApplicationBuilder.Services.AddDbContext<StoreContext>(options=>
 			{
@@ -55,9 +62,10 @@ namespace Talabat.APIs
 				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("IdentityConnection"));
 			});
 			
-			#endregion
-			
-			var app = webApplicationBuilder.Build();
+
+            #endregion
+
+            var app = webApplicationBuilder.Build();
 
 			#region Asking Clr To Generate Object From storeContext
 			//1-Create scope (using keyword => dispose the scope after using it )
@@ -109,24 +117,14 @@ namespace Talabat.APIs
 			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 			app.UseHttpsRedirection();
+			app.UseAuthorization();
+			app.UseAuthentication();
 
 			app.UseStaticFiles();
-
-			////in mvc
-			//app.UseRouting();
-			//app.UseEndpoints(endpoints =>
-			//{
-			//	endpoints.MapControllerRoute(
-			//		name: "default",
-			//		pattern: "{controller}/{action}/{id?}"
-			//		);
-			//});
-
 
 			//to use route debend on attr route
 			app.MapControllers();
 
-			
 			#endregion
 			
 
