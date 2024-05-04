@@ -22,7 +22,10 @@ namespace Talabat.Repository.Data.Configuration.Order_Cofiguration
                 );
 
             //one to many
-            builder.HasOne(o => o.DeliveryMethod).WithMany();
+            builder.HasOne(o => o.DeliveryMethod).WithMany().OnDelete(DeleteBehavior.SetNull);
+
+
+            builder.HasMany(o => o.OrderItems).WithOne().OnDelete(DeleteBehavior.Cascade);
 
             ////one to one
             //builder.HasOne(o => o.DeliveryMethod).WithOne();
