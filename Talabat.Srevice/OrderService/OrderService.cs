@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Talabat.Core;
 using Talabat.Core.Entities;
 using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Repository.Contract;
@@ -14,23 +15,28 @@ namespace Talabat.Srevice.OrderService
     public class OrderService : IOrderService
     {
         private readonly IBasektRepository _basektRepo;
-        private readonly IGenericRepository<Product> _productRepo;
-        private readonly IGenericRepository<DeliveryMethod> _deliveryMethodsRepo;
-        private readonly IGenericRepository<Order> _orderRepo;
+        private readonly IUnitOfWork _unitOfWork;
+
+        ///private readonly IGenericRepository<Product> _productRepo;
+        ///private readonly IGenericRepository<DeliveryMethod> _deliveryMethodsRepo;
+        ///private readonly IGenericRepository<Order> _orderRepo;
 
         public OrderService(
             IBasektRepository basektRepo,
-            IGenericRepository<Product> productRepo,
-            IGenericRepository<DeliveryMethod> deliveryMethodsRepo,
-            IGenericRepository<Order> orderRepo
+            IUnitOfWork unitOfWork
+            ///IGenericRepository<Product> productRepo,
+            ///IGenericRepository<DeliveryMethod> deliveryMethodsRepo,
+            ///IGenericRepository<Order> orderRepo
+            ///
 
 
             )
         {
             _basektRepo = basektRepo;
-            _productRepo = productRepo;
-            _deliveryMethodsRepo = deliveryMethodsRepo;
-            _orderRepo = orderRepo;
+            _unitOfWork = unitOfWork;
+            ///_productRepo = productRepo;
+            ///_deliveryMethodsRepo = deliveryMethodsRepo;
+            ///_orderRepo = orderRepo;
         }
         public async Task<Order> CreateOrderAsync(string basketId, string buyerEmail, Address shippingAddress, int deliveryMethodId)
         {
@@ -44,7 +50,7 @@ namespace Talabat.Srevice.OrderService
                 
                 foreach (var item in basket.Items)
                 {
-                    var product = await _productRepo.GetAsync(item.Id);
+                    var product = await _unitOfWork.Repository<Product>().GetAsync(item.Id);
                     var productItemOrder = new ProductItemOrder(product.id,product.Name,product.PictureUrl);
                     var orderItem = new OrderItem(productItemOrder,product.Price,item.Quantity);
                     orderItems.Add(orderItem);
@@ -56,14 +62,19 @@ namespace Talabat.Srevice.OrderService
             var subTotal = orderItems.Sum(o => o.Price * o.Quantity);
 
             // 4. Get Delivery Method From DeliveryMethods Repo
-            var deliveryMethod = await _deliveryMethodsRepo.GetAsync(deliveryMethodId);
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetAsync(deliveryMethodId);
 
             // 5. Create Order
             var order = new Order(buyerEmail,shippingAddress
                 ,deliveryMethod, orderItems,subTotal);
 
             // 6. Save To Database [TODO]
-            _orderRepo.Add(order);
+            _unitOfWork.Repository<Order>().Add(order);
+            
+            //save changes
+            var result=await _unitOfWork.CompleteAsync();
+            if (result <= 0) return null;
+            return order;
         }
         public Task<Order> GetOrderByIdForUser(int orderId, string buyerEmail)
         {
