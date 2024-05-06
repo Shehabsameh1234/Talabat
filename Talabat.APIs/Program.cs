@@ -33,7 +33,8 @@ namespace Talabat.APIs
 			// Add services to the container.
 
 			//register required web apis  services to the DI container
-			webApplicationBuilder.Services.AddControllers().AddNewtonsoftJson(Options =>
+			webApplicationBuilder.Services.AddControllers()
+				.AddNewtonsoftJson(Options =>
 			{
 				Options.SerializerSettings.ReferenceLoopHandling=ReferenceLoopHandling.Ignore;
 			});
