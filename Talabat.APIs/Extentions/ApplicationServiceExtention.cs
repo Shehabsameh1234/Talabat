@@ -10,6 +10,7 @@ using Talabat.Core.Repository.Contract;
 using Talabat.Core.Service.Contract;
 using Talabat.Repository;
 using Talabat.Srevice.AuthService;
+using Talabat.Srevice.OrderService;
 
 namespace Talabat.APIs.Extentions
 {
@@ -18,10 +19,12 @@ namespace Talabat.APIs.Extentions
         public static IServiceCollection ApplicationServices(this IServiceCollection services)
         {
             
-            //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
+            services.AddScoped(typeof(IOrderService), typeof(OrderService));
+           
             services.AddScoped(typeof(IBasektRepository), typeof(BasketRepository));
 
             services.AddAutoMapper(typeof(MappingProfiles));

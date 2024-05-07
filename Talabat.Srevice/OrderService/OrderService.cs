@@ -8,7 +8,7 @@ using Talabat.Core.Entities;
 using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Repository.Contract;
 using Talabat.Core.Service.Contract;
-using Address = Talabat.Core.Entities.Order_Aggregate.Address;
+using OrderAddress = Talabat.Core.Entities.Order_Aggregate.OrderAddress;
 
 namespace Talabat.Srevice.OrderService
 {
@@ -38,7 +38,7 @@ namespace Talabat.Srevice.OrderService
             ///_deliveryMethodsRepo = deliveryMethodsRepo;
             ///_orderRepo = orderRepo;
         }
-        public async Task<Order> CreateOrderAsync(string basketId, string buyerEmail, Address shippingAddress, int deliveryMethodId)
+        public async Task<Order> CreateOrderAsync(string basketId, string buyerEmail, OrderAddress shippingAddress, int deliveryMethodId)
         {
             // 1.Get Basket From Baskets Repo
             var basket= await _basektRepo.GetBasketAsync(basketId);
