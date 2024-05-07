@@ -29,47 +29,53 @@ namespace Talabat.APIs.Controllers
 
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status400BadRequest)]
-        [HttpPost][Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
         public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderDto orderDto)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
             var address = _mapper.Map<AddressDto, OrderAddress>(orderDto.ShippingAddress);
 
-            var order =await _orderService.CreateOrderAsync(orderDto.BasketId, email, address, orderDto.DeliveryMethodId);
+            var order = await _orderService.CreateOrderAsync(orderDto.BasketId, email, address, orderDto.DeliveryMethodId);
 
             if (order is null) return BadRequest(new ApisResponse(400));
 
-            return Ok(_mapper.Map<Order,OrderToReturnDto>(order));
+            return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
         }
-        
+
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status404NotFound)]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
         [HttpGet("GetOrdersForCurrentUser")]
         public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
-            var orders =await _orderService.GetOrdersForUserAsync(email);
+            var orders = await _orderService.GetOrdersForUserAsync(email);
             if (orders == null) return NotFound(new ApisResponse(404));
 
             return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status404NotFound)]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
         [HttpGet("{orderId}")]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderForUser(int orderId)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
-            var order = await _orderService.GetOrderByIdForUser(orderId,email);
+            var order = await _orderService.GetOrderByIdForUser(orderId, email);
 
             if (order == null) return NotFound(new ApisResponse(404));
 
             return Ok(_mapper.Map<OrderToReturnDto>(order));
         }
-
+        [HttpGet("getDeliverMethods")]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            var deliveryMethods = await _orderService.GetDeliveryMethodsAsync();
+            return Ok(deliveryMethods);
+        }
+            
     }
 }
