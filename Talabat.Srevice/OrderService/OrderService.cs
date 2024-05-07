@@ -8,6 +8,7 @@ using Talabat.Core.Entities;
 using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Repository.Contract;
 using Talabat.Core.Service.Contract;
+using Talabat.Core.Specifications;
 using OrderAddress = Talabat.Core.Entities.Order_Aggregate.OrderAddress;
 
 namespace Talabat.Srevice.OrderService
@@ -38,7 +39,7 @@ namespace Talabat.Srevice.OrderService
             ///_deliveryMethodsRepo = deliveryMethodsRepo;
             ///_orderRepo = orderRepo;
         }
-        public async Task<Order> CreateOrderAsync(string basketId, string buyerEmail, OrderAddress shippingAddress, int deliveryMethodId)
+        public async Task<Order?> CreateOrderAsync(string basketId, string buyerEmail, OrderAddress shippingAddress, int deliveryMethodId)
         {
             // 1.Get Basket From Baskets Repo
             var basket= await _basektRepo.GetBasketAsync(basketId);
@@ -76,17 +77,27 @@ namespace Talabat.Srevice.OrderService
             if (result <= 0) return null;
             return order;
         }
-        public Task<Order> GetOrderByIdForUser(int orderId, string buyerEmail)
+        public async Task<Order?> GetOrderByIdForUser(int orderId, string buyerEmail)
         {
-            throw new NotImplementedException();
+            var orderRepo = _unitOfWork.Repository<Order>();
+
+            var spec =new OrderSpecifications(orderId,buyerEmail);
+
+            var order = await orderRepo.GetWithSpecAsync(spec);
+
+            return order;
         }
-        public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
         {
-            throw new NotImplementedException();
+            var orderRepo = _unitOfWork.Repository<Order>();
+
+            var spec = new OrderSpecifications(buyerEmail);
+
+            var orders = await orderRepo.GetAllWithSpecAsync(spec);
+
+            return orders;
         }
-        public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
+        => await  _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
     }
 }
