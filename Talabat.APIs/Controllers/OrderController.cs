@@ -30,7 +30,7 @@ namespace Talabat.APIs.Controllers
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status400BadRequest)]
         [HttpPost][Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
+        public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderDto orderDto)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
@@ -40,27 +40,27 @@ namespace Talabat.APIs.Controllers
 
             if (order is null) return BadRequest(new ApisResponse(400));
 
-            return Ok(order);
+            return Ok(_mapper.Map<Order,OrderToReturnDto>(order));
         }
         
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status404NotFound)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("GetOrdersForCurrentUser")]
-        public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+        public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
             var orders =await _orderService.GetOrdersForUserAsync(email);
             if (orders == null) return NotFound(new ApisResponse(404));
 
-            return Ok(orders);
+            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status404NotFound)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{orderId}")]
-        public async Task<ActionResult<Order>> GetOrderForUser(int orderId)
+        public async Task<ActionResult<OrderToReturnDto>> GetOrderForUser(int orderId)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
@@ -68,7 +68,7 @@ namespace Talabat.APIs.Controllers
 
             if (order == null) return NotFound(new ApisResponse(404));
 
-            return Ok(order);
+            return Ok(_mapper.Map<OrderToReturnDto>(order));
         }
 
     }
