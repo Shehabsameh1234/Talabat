@@ -33,7 +33,7 @@ namespace Talabat.APIs.Controllers
             _mapper = mapper;
         }
         //JwtBearerDefaults.AuthenticationScheme=Bearer
-        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+        
 		[HttpGet]
 		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]QuerySpecParams querySpec)
 		{
