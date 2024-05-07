@@ -39,7 +39,7 @@ namespace Talabat.Srevice.OrderService
             ///_deliveryMethodsRepo = deliveryMethodsRepo;
             ///_orderRepo = orderRepo;
         }
-        public async Task<Order> CreateOrderAsync(string basketId, string buyerEmail, OrderAddress shippingAddress, int deliveryMethodId)
+        public async Task<Order?> CreateOrderAsync(string basketId, string buyerEmail, OrderAddress shippingAddress, int deliveryMethodId)
         {
             // 1.Get Basket From Baskets Repo
             var basket= await _basektRepo.GetBasketAsync(basketId);
@@ -77,9 +77,15 @@ namespace Talabat.Srevice.OrderService
             if (result <= 0) return null;
             return order;
         }
-        public async Task<Order> GetOrderByIdForUser(int orderId, string buyerEmail)
+        public async Task<Order?> GetOrderByIdForUser(int orderId, string buyerEmail)
         {
-            throw new NotImplementedException();
+            var orderRepo = _unitOfWork.Repository<Order>();
+
+            var spec =new OrderSpecifications(orderId,buyerEmail);
+
+            var order = await orderRepo.GetWithSpecAsync(spec);
+
+            return order;
         }
         public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
         {
