@@ -19,7 +19,7 @@ namespace AminDashboard
 
             webApplicationBuilder.Services.AddDbContext<StoreContext>(options =>
             {
-                options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             webApplicationBuilder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
