@@ -1,4 +1,5 @@
 ﻿using AminDashboard.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Talabat.Core.Entities;
 
 namespace AminDashboard.Controllers
 {
+    
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
