@@ -1,7 +1,12 @@
+using AminDashboard.Helpers;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Talabat.APIs.Helpers;
+using Talabat.Core;
 using Talabat.Core.Entities;
+using Talabat.Repository;
 using Talabat.Repository.Data;
 using Talabat.Repository.Identity;
 
@@ -31,6 +36,11 @@ namespace AminDashboard
             {
                 //options.Password = null;
             }).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+            webApplicationBuilder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+
+            webApplicationBuilder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
             #endregion
 
