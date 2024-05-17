@@ -14,13 +14,13 @@
 			//4-save file as streams
 			using var fileStream = new FileStream(filePath, FileMode.Create);
 			file.CopyTo(fileStream);
-			return fileName;
-		}
+			return Path.Combine("images\\products" , fileName);
+        }
 
-		public static void DeleteFile(string fileName, string folderName)
+        public static void DeleteFile(string fileName)
 		{
 			//1-get filepath
-			string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", folderName, fileName);
+			string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\", fileName);
 			//2-check if file exist
 			if (File.Exists(filePath))
 			{
