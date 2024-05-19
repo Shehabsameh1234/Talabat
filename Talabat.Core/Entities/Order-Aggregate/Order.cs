@@ -27,8 +27,8 @@ namespace Talabat.Core.Entities.Order_Aggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public OrderAddress ShippingAddress { get; set; }= null!;
         //public int DeliveryMethodId { get; set; }
-        public DeliveryMethod? DeliveryMethod { get; set; } = null!;
-        public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
+        public virtual DeliveryMethod? DeliveryMethod { get; set; } = null!;
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
         //will calculate before  DeliveryMethod.Cost
         public decimal SubTotal { get; set; }
         //public decimal total { get => SubTotal + DeliveryMethod.Cost; }

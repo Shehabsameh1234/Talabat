@@ -1,0 +1,64 @@
+﻿@model ProductViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+@inject IUnitOfWork unitOfWork
+@{
+
+    var brands = new SelectList(await unitOfWork.Repository<ProductBrand>().GetAllAsync() as IEnumerable<ProductBrand>, nameof(ProductBrand.id), nameof(ProductBrand.Name));
+    var categories = new SelectList(await unitOfWork.Repository<ProductCategory>().GetAllAsync() as IEnumerable<ProductCategory>, nameof(ProductCategory.id), nameof(ProductCategory.Name));
+
+}
+<h1>Edit Product</h1>
+<div asp-validation-summary="All"></div>
+
+<div class="container">
+    <form method="post" asp-action="Edit" enctype="multipart/form-data">
+        <input hidden asp-for="PictureUrl" />
+        <div class="form-group">
+            <label asp-for="Image" class="col-form-label "></label>
+            <input asp-for="Image" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Name" class="col-form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="col-form-label"></label>
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price" class="col-form-label"></label>
+            <input asp-for="Price" class="form-control" type="number" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Brand" class="col-form-label"></label>
+            <select class="form-control" asp-items="brands" asp-for="BrandId">
+                <option value="@null">-- Select Brand --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Category" class="col-form-label"></label>
+            <select class="form-control" asp-items="categories" asp-for="CategoryId">
+                <option value="@null">-- Select Type --</option>
+            </select>
+        </div>
+        <br />
+        <br />
+        <input type="submit" value="Add" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-light">Back To List</a>
+    </form>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+
