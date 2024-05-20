@@ -65,7 +65,16 @@ namespace Talabat.APIs
 			{
 				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("IdentityConnection"));
 			});
-			
+
+
+			webApplicationBuilder.Services.AddCors(options =>
+			{
+				options.AddPolicy("MyPolicy", policyOtions =>
+				{
+					policyOtions.AllowAnyHeader()/*.WithHeaders("Get,Post")*/.AllowAnyMethod()/*.AllowAnyOrigin();*/
+					.WithOrigins(webApplicationBuilder.Configuration["FrontBaseUrl"]);
+				});
+			});
 
             #endregion
 
@@ -121,16 +130,21 @@ namespace Talabat.APIs
 			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 			app.UseHttpsRedirection();
-			app.UseAuthorization();
-			app.UseAuthentication();
-
+		
 			app.UseStaticFiles();
+
+
+			app.UseCors("MyPolicy");
+
 
 			//to use route debend on attr route
 			app.MapControllers();
 
+			app.UseAuthorization();
+			app.UseAuthentication();
+
 			#endregion
-			
+
 
 			app.Run();
 		}
