@@ -5,8 +5,9 @@ namespace Talabat.APIs.Dtos
 {
     public class CustomerBasketDto
     {
-        [Required]
-        public string Id { get; set; }
-        public List<BasketItemsDto> Items { get; set; }
-    }
+		[Required]
+		public string Id { get; set; }
+		public List<BasketItems> Items { get; set; }
+		
+	}
 }

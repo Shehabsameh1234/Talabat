@@ -11,6 +11,7 @@ using Talabat.Core.Service.Contract;
 using Talabat.Repository;
 using Talabat.Srevice.AuthService;
 using Talabat.Srevice.OrderService;
+using Talabat.Srevice.PaymentService;
 using Talabat.Srevice.ProductService;
 
 namespace Talabat.APIs.Extentions
@@ -24,7 +25,10 @@ namespace Talabat.APIs.Extentions
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
-            services.AddScoped(typeof(IOrderService), typeof(OrderService));
+			services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
+
+
+			services.AddScoped(typeof(IOrderService), typeof(OrderService));
 
             services.AddScoped(typeof(IProductService), typeof(ProductService));
 
