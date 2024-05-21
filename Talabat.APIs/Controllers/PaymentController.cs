@@ -10,7 +10,6 @@ using Talabat.Core.Service.Contract;
 namespace Talabat.APIs.Controllers
 {
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 	public class PaymentController : BaseApiController
 	{
 		private readonly IPaymentService _paymentService;
@@ -25,6 +24,7 @@ namespace Talabat.APIs.Controllers
 
 		[ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApisResponse), StatusCodes.Status400BadRequest)]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[HttpGet("{basketId}")]
 		public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
 		{
