@@ -35,8 +35,9 @@ namespace Talabat.APIs.Controllers
             _mapper = mapper;
             _productService = productService;
         }
-        //JwtBearerDefaults.AuthenticationScheme=Bearer
-        
+		//JwtBearerDefaults.AuthenticationScheme=Bearer
+
+		[Cashed(600)]
 		[HttpGet]
 		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]QuerySpecParams querySpec)
 		{
