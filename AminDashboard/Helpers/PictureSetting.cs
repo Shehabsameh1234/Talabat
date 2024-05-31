@@ -9,7 +9,7 @@
 			//2-get File Name and Make It Unique
 			//string fileName=file.Name; //get file Extention
 			string fileName = $"{Guid.NewGuid()}{file.FileName}"; //get file Name and make it unique
-																  //3-get file path
+			//3-get file path
 			string filePath = Path.Combine(folderpath, fileName);
 			//4-save file as streams
 			using var fileStream = new FileStream(filePath, FileMode.Create);

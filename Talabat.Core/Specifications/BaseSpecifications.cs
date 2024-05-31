@@ -25,7 +25,7 @@ namespace Talabat.Core.Specifications
         //will use this ctor to set criteria value  in get  by id
         public BaseSpecifications(Expression<Func<T, bool>> criteriaExpression)
         {
-            Criteria=criteriaExpression; //p=>p.id==10
+            Criteria=criteriaExpression; 
         }
         public void AddOrderBy(Expression<Func<T, object>> orderBy)
         {

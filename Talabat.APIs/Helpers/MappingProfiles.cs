@@ -27,13 +27,6 @@ namespace Talabat.APIs.Helpers
            .ForMember(o => o.ProductName, o => o.MapFrom(o => o.ProductItem.ProductName))
            .ForMember(o => o.PictureUrl, o => o.MapFrom(o => o.ProductItem.PictureUrl))
            .ForMember(p => p.PictureUrl, o => o.MapFrom<OrderToReturnDtoPictureUlrResolver>());
-
-
-
-
-
-
-
         }
     }
 }

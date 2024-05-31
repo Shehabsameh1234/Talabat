@@ -13,7 +13,7 @@ namespace Talabat.Repository
     {
         public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuey,ISepcifications<TEntity> spec)
         {
-            var query = inputQuey; //_dbContext.Set<T>()
+            var query = inputQuey; 
 
             if (spec.Criteria is not null)
                 query = query.Where(spec.Criteria);

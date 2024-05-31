@@ -17,26 +17,17 @@ namespace Talabat.APIs.Controllers
 	
 	public class ProductController : BaseApiController
 	{
-		//private readonly IGenericRepository<Product> _productRepository;
-  //      private readonly IGenericRepository<ProductBrand> _brandRepository;
-  //      private readonly IGenericRepository<ProductCategory> _categoryiesRepository;
+		
         private readonly IMapper _mapper;
         private readonly IProductService _productService;
 
         public ProductController(
-			//IGenericRepository<Product> productRepository,
-   //         IGenericRepository<ProductBrand> BrandRepository,
-   //         IGenericRepository<ProductCategory> CategoryiesRepository,
             IMapper mapper,IProductService productService)
         {
-			//_productRepository = productRepository;
-   //         _brandRepository = BrandRepository;
-   //         _categoryiesRepository = CategoryiesRepository;
             _mapper = mapper;
             _productService = productService;
         }
-		//JwtBearerDefaults.AuthenticationScheme=Bearer
-
+		
 		[Cashed(600)]
 		[HttpGet]
 		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]QuerySpecParams querySpec)

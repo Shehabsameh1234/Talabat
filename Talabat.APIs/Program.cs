@@ -54,7 +54,6 @@ namespace Talabat.APIs
 				//options.Password = null;
 			}).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 			
-
 			//redis object
 			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvidor=>
 			{
@@ -65,8 +64,6 @@ namespace Talabat.APIs
 			{
 				options/*.UseLazyLoadingProxies()*/.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("IdentityConnection"));
 			});
-
-
 			webApplicationBuilder.Services.AddCors(options =>
 			{
 				options.AddPolicy("MyPolicy", policyOtions =>

@@ -19,28 +19,18 @@ namespace Talabat.Srevice.OrderService
         private readonly IUnitOfWork _unitOfWork;
 		private readonly IPaymentService _paymentService;
 
-		///private readonly IGenericRepository<Product> _productRepo;
-		///private readonly IGenericRepository<DeliveryMethod> _deliveryMethodsRepo;
-		///private readonly IGenericRepository<Order> _orderRepo;
+		/
 
 		public OrderService(
             IBasektRepository basektRepo,
             IUnitOfWork unitOfWork,
             IPaymentService paymentService
-            ///IGenericRepository<Product> productRepo,
-            ///IGenericRepository<DeliveryMethod> deliveryMethodsRepo,
-            ///IGenericRepository<Order> orderRepo
-            ///
-
 
             )
         {
             _basektRepo = basektRepo;
             _unitOfWork = unitOfWork;
 			_paymentService = paymentService;
-			///_productRepo = productRepo;
-			///_deliveryMethodsRepo = deliveryMethodsRepo;
-			///_orderRepo = orderRepo;
 		}
         public async Task<Order?> CreateOrderAsync(string basketId, string buyerEmail, OrderAddress shippingAddress, int deliveryMethodId)
         {

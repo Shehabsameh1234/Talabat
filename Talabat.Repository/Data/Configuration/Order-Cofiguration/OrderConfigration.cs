@@ -27,9 +27,7 @@ namespace Talabat.Repository.Data.Configuration.Order_Cofiguration
 
             builder.HasMany(o => o.OrderItems).WithOne().OnDelete(DeleteBehavior.Cascade);
 
-            ////one to one
-            //builder.HasOne(o => o.DeliveryMethod).WithOne();
-            //builder.HasIndex("DeliveryMethodId").IsUnique(true);
+            
 
             builder.Property(o => o.SubTotal).HasColumnType("decimal (18,2)");
         }

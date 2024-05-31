@@ -32,10 +32,6 @@ namespace Talabat.Core.Entities.Order_Aggregate
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
         //will calculate before  DeliveryMethod.Cost
         public decimal SubTotal { get; set; }
-        //public decimal total { get => SubTotal + DeliveryMethod.Cost; }
-        //[NotMapped]
-        //public decimal Total => SubTotal + DeliveryMethod.Cost;
-        //==
         public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
 
         public string PaymentIntitId { get; set; } = null!;
