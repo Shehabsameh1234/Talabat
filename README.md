@@ -4,19 +4,19 @@ This project is a RESTful API for an eCommerce application built using .NET Core
 
 ## Features
 
--User authentication and authorization
--Product management (CRUD operations)
--Category management (CRUD operations)
--Order management (CRUD operations)
--Cart management
--Payment processing
--Admin dashboard with enhanced features
+- User authentication and authorization
+- Product management (CRUD operations)
+- Category management (CRUD operations)
+- Order management (CRUD operations)
+- Cart management
+- Payment processing
+- Admin dashboard with enhanced features
 
 ## Technologies Used
 
--.NET Core 6.0
--Entity Framework Core
--SQL Server
--Swagger for API documentation
--JWT for authentication
+- .NET Core 6.0
+- Entity Framework Core
+- SQL Server
+- Swagger for API documentation
+- JWT for authentication
 
