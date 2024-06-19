@@ -15,6 +15,8 @@ namespace Talabat.Repository.Data.Configuration
 		{
 			builder.Property(b => b.Name)
 				.IsRequired();
+
+			builder.HasIndex(b => b.Name).IsUnique();
 		}
 	}
 }

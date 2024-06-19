@@ -5,11 +5,13 @@ VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.APIs", "Talabat.APIs\Talabat.APIs.csproj", "{EE3A9086-EF07-4AF1-9514-C17B0FC2D75D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Talabat.Core", "Talabat.Core\Talabat.Core.csproj", "{0FC09745-5228-4406-A621-AC329C555253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.Core", "Talabat.Core\Talabat.Core.csproj", "{0FC09745-5228-4406-A621-AC329C555253}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Talabat.Repository", "Talabat.Repository\Talabat.Repository.csproj", "{ECF0B84C-DD30-458D-B6CD-6DDCCB1D2059}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.Repository", "Talabat.Repository\Talabat.Repository.csproj", "{ECF0B84C-DD30-458D-B6CD-6DDCCB1D2059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Talabat.Srevice", "Talabat.Srevice\Talabat.Srevice.csproj", "{91CE3E76-FAFC-49DA-B291-C34DA550DD66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.Srevice", "Talabat.Srevice\Talabat.Srevice.csproj", "{91CE3E76-FAFC-49DA-B291-C34DA550DD66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AminDashboard", "AminDashboard\AminDashboard.csproj", "{35AA07A0-2241-4F38-9365-A4470A3D1FA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{91CE3E76-FAFC-49DA-B291-C34DA550DD66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91CE3E76-FAFC-49DA-B291-C34DA550DD66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91CE3E76-FAFC-49DA-B291-C34DA550DD66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35AA07A0-2241-4F38-9365-A4470A3D1FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35AA07A0-2241-4F38-9365-A4470A3D1FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35AA07A0-2241-4F38-9365-A4470A3D1FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35AA07A0-2241-4F38-9365-A4470A3D1FA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
