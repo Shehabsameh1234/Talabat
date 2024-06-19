@@ -19,3 +19,4 @@ This project is a RESTful API for an eCommerce application built using .NET Core
 -SQL Server
 -Swagger for API documentation
 -JWT for authentication
+
