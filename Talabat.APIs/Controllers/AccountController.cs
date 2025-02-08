@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32;
 using System.Security.Claims;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extentions;
 using Talabat.Core.Entities;
 using Talabat.Core.Service.Contract;
-using Talabat.Srevice.AuthService;
+
 
 namespace Talabat.APIs.Controllers
 {

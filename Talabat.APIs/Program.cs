@@ -1,23 +1,13 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System.Text;
-using Talabat.APIs.Errors;
 using Talabat.APIs.Extentions;
-using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
 using Talabat.Core.Entities;
-using Talabat.Core.Repository.Contract;
-using Talabat.Core.Service.Contract;
-using Talabat.Repository;
 using Talabat.Repository.Data;
 using Talabat.Repository.Identity;
-using Talabat.Srevice.AuthService;
+
 
 namespace Talabat.APIs
 {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 using Talabat.APIs.Errors;
 
